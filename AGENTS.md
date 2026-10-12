@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Guidance for AI coding agents working in this repository (this checkout = `openrecall` fork on the `local` branch, **Arch Linux + KDE Plasma (Wayland)**).
+Guidance for AI coding agents working in this repository (this checkout = `openrecall` fork on the `main` branch, **Arch Linux + KDE Plasma (Wayland)**).
 
 ## Environment
 
@@ -83,7 +83,7 @@ Both capture and web units set `WAYLAND_DISPLAY`, `XDG_SESSION_TYPE=wayland`, `X
 - **Wallpaper screens** matching `wallpaper_reference.webp` (≥ `WALLPAPER_SIM_THRESHOLD`, default 0.90) or with no window attributed are never sent to the model; their `Screen contains no meaningful content.` blocks are written in code.
 - Prune/ad-hoc `pkill` patterns: use `pkill -f "ollama serv[e]"` so the pattern doesn't match the invoking shell.
 - Scratch probe scripts live under `/tmp/opencode/` when used ad-hoc — don't commit them into the repo.
-- Never commit unless the user explicitly asks. Keep working changes on `local`; `main` tracks upstream and must stay clean.
+- Never commit unless the user explicitly asks. Single working branch: **`main`** (fork = upstream `main` + fork changes; sync upstream with `git merge upstream/main`).
 
 ## Upstream merges
 

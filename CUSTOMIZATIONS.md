@@ -1,9 +1,8 @@
 # Local customizations (this checkout) vs upstream openrecall
 
-This repository is a **working copy of upstream [`openrecall/openrecall`](https://github.com/openrecall/openrecall)** with a set of local modifications committed on a **`local` branch**.
+This repository is a **working copy of upstream [`openrecall/openrecall`](https://github.com/openrecall/openrecall)** with a set of local modifications committed on the single **`main` branch** (this fork = upstream `main` + the fork's changes).
 
-- `main`  — clean, tracks `origin/main`, always matches upstream.
-- `local` — carries all customizations (the current working branch).
+- `main` — carries everything: upstream's history plus the fork's customizations (the current working branch). Pushes go to `origin` (your fork) only; `upstream` is fetch-only.
 
 The purpose of this file: know exactly what is different, which systems are impacted, and how to keep pulling upstream git updates without losing your local changes.
 
@@ -99,18 +98,17 @@ This fork is now **Linux-native**. The original Win32/`.bat`/`.vbs` pieces were 
 
 ## How to keep pulling upstream updates
 
-Your customizations live on the **`local`** branch (`main` stays clean and tracks
-upstream). When upstream releases something, merge it in:
+Everything lives on the single **`main`** branch, based on upstream. When upstream
+releases something, merge it in:
 
 ```
-git checkout main
-git pull                       # or: git fetch origin && git merge --ff-only origin/main
-git checkout local
-git merge main                 # resolve conflicts in the modified files below if any
+git fetch upstream
+git merge upstream/main        # resolve conflicts in the modified files below, if any
+git push
 ```
 
-`git log --graph --decorate --oneline local main origin/main` shows the two lines
-of history side by side so you can compare exactly what differs.
+`git log --graph --decorate --oneline main upstream/main` shows your fork changes
+on top of upstream so you can compare exactly what differs.
 
 Conflicts are possible only in files upstream also changed — realistically the 6
 modified files in the table above. Untracked/added files never conflict unless

@@ -12,14 +12,14 @@ Join our [Discord](https://discord.gg/RzvCYRgUkx) and/or [Telegram](https://t.me
 
 ## About this fork (a fork of OpenRecall)
 
-This repository is a **personal fork of [openrecall/openrecall](https://github.com/openrecall/openrecall)**, reworked to run natively on **Arch Linux + KDE Plasma (Wayland)** and extended with a set of features on top of upstream. All local changes live on the **`local`** branch; **`main`** mirrors upstream and is only used to pull/merge upstream updates.
+This repository is a **personal fork of [openrecall/openrecall](https://github.com/openrecall/openrecall)**, reworked to run natively on **Arch Linux + KDE Plasma (Wayland)** and extended with a set of features on top of upstream. Everything lives on the single **`main`** branch: this fork = upstream `main` + one commit of fork changes; upstream is synced by merging `upstream/main` into it.
 
 | | |
 |---|---|
 | **Upstream** | [`openrecall/openrecall`](https://github.com/openrecall/openrecall) — AGPLv3 |
 | **This fork** | [BaXB0/openrecall](https://github.com/BaXB0/openrecall) |
-| **Working branch** | **`local`** — every change below lives here |
-| **`main`** | clean mirror of upstream (merge base) |
+| **Working branch** | **`main`** — the only branch; the fork = upstream + the changes below |
+| **Upstream sync** | merge `upstream/main` in (`upstream` is fetch-only; pushes to it are blocked) |
 | **Full technical delta & merge procedure** | [CUSTOMIZATIONS.md](CUSTOMIZATIONS.md) |
 
 If you just want unmodified upstream OpenRecall, use the upstream install instructions further down and ignore this section.
