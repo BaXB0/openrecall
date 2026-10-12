@@ -22,6 +22,8 @@ with patch('openrecall.config.db_path', mock_db_path):
         insert_entry,
         get_all_entries,
         get_timestamps,
+        get_days_with_entries,
+        delete_entries_for_timestamp,
         Entry,
     )
     # Also patch db_path within the database module itself if it was imported directly there
@@ -104,27 +106,77 @@ class TestDatabase(unittest.TestCase):
         np.testing.assert_array_almost_equal(retrieved_embedding, embedding)
 
     def test_insert_duplicate_timestamp(self):
-        """Test inserting an entry with a duplicate timestamp (should be ignored)."""
+        """Same (timestamp, monitor) is deduped; different monitors both save."""
         ts = int(time.time())
-        embedding1 = np.array([0.1, 0.2, 0.3], dtype=np.float32)
-        embedding2 = np.array([0.4, 0.5, 0.6], dtype=np.float32)
+        embedding = np.array([0.1, 0.2, 0.3], dtype=np.float32)
 
-        id1 = insert_entry("First text", ts, embedding1, "App1", "Title1")
+        id1 = insert_entry("First text", ts, embedding, "App1", "Title1", monitor=0)
         self.assertIsNotNone(id1)
 
-        # Try inserting another entry with the same timestamp
-        id2 = insert_entry("Second text", ts, embedding2, "App2", "Title2")
-        self.assertIsNone(id2, "Inserting duplicate timestamp should return None")
+        # Same timestamp + same monitor -> no-op (UNIQUE(timestamp, monitor)).
+        id2 = insert_entry("Duplicate text", ts, embedding, "App2", "Title2", monitor=0)
+        self.assertIsNone(id2, "Inserting duplicate (timestamp, monitor) should return None")
 
-        # Verify only the first entry exists
+        # Same timestamp + different monitor -> allowed (one row per monitor).
+        id3 = insert_entry("Monitor 1 text", ts, embedding, "App3", "Title3", monitor=1)
+        self.assertIsNotNone(id3)
+
         cursor = self.conn.cursor()
-        cursor.execute("SELECT COUNT(*) FROM entries WHERE timestamp = ?", (ts,))
-        count = cursor.fetchone()[0]
-        self.assertEqual(count, 1)
+        cursor.execute("SELECT monitor, text FROM entries WHERE timestamp = ? ORDER BY monitor", (ts,))
+        rows = cursor.fetchall()
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(rows[0][1], "First text")
+        self.assertEqual(rows[1][1], "Monitor 1 text")
 
-        cursor.execute("SELECT text FROM entries WHERE timestamp = ?", (ts,))
-        text = cursor.fetchone()[0]
-        self.assertEqual(text, "First text") # Ensure the first one was kept
+    def test_insert_context_fields(self):
+        """browser_tabs / windows persist as JSON and round-trip through Entry."""
+        ts = int(time.time())
+        embedding = np.array([0.1, 0.2, 0.3], dtype=np.float32)
+        tabs = [
+            {"title": "Home / X", "url": "https://x.com/home", "active": True, "monitor": 0},
+            {"title": "soundgasm.net", "url": "https://soundgasm.net/", "active": True, "monitor": 1},
+        ]
+        wins = [
+            {"app": "LibreWolf.exe", "title": "Home / X", "monitor": 0},
+            {"app": "explorer.exe", "title": "This PC", "monitor": None},
+        ]
+        inserted_id = insert_entry(
+            "Test text", ts, embedding, "TestApp", "TestTitle",
+            browser_tabs=tabs, windows=wins,
+        )
+        self.assertIsNotNone(inserted_id)
+
+        entries = get_all_entries()
+        self.assertEqual(len(entries), 1)
+        e = entries[0]
+        self.assertEqual(e.browser_tabs, tabs)
+        self.assertEqual(e.windows, wins)
+        np.testing.assert_array_almost_equal(e.embedding, embedding)
+
+    def test_insert_context_fields_roundtrip_unicode(self):
+        """Non-ASCII JSON survives the storage round-trip."""
+        ts = int(time.time())
+        embedding = np.array([0.5], dtype=np.float32)
+        tabs = [{"title": "Emoji \u2764\ufe0f test", "url": "https://\u00e9.com", "active": True}]
+        insert_entry("t", ts, embedding, "A", "T", browser_tabs=tabs)
+        e = get_all_entries()[0]
+        self.assertEqual(e.browser_tabs, tabs)
+        self.assertIsNone(e.windows)
+
+    def test_legacy_rows_have_none_context(self):
+        """Rows written without the new fields parse to None, not a crash."""
+        ts = int(time.time())
+        cursor = self.conn.cursor()
+        cursor.execute(
+            "INSERT INTO entries (text, timestamp, embedding, app, title, monitor, screen_x) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?)",
+            ("Legacy", ts, np.zeros(4, dtype=np.float32).tobytes(), "A", "T", 0, 0),
+        )
+        self.conn.commit()
+        e = get_all_entries()[0]
+        self.assertEqual(e.browser_tabs, None)
+        self.assertEqual(e.windows, None)
+        self.assertEqual(e.browser_url, None)
 
     def test_get_all_entries_empty(self):
         """Test getting entries from an empty database."""
@@ -183,6 +235,40 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual(len(timestamps), 3)
         # Timestamps should be ordered DESC
         self.assertEqual(timestamps, [ts2, ts1, ts3])
+
+    def test_get_days_with_entries(self):
+        """Test distinct local days are returned sorted."""
+        from datetime import datetime
+        emb = np.array([0.1] * 5, dtype=np.float32)
+        ts_day1 = datetime(2026, 1, 1, 10, 0, 0).timestamp()
+        ts_day2 = datetime(2026, 1, 2, 9, 30, 0).timestamp()
+        insert_entry("D1a", int(ts_day1), emb, "A", "T")
+        insert_entry("D1b", int(ts_day1) + 5, emb, "A", "T")
+        insert_entry("D2", int(ts_day2), emb, "A", "T")
+
+        days = get_days_with_entries()
+        self.assertEqual(days, ["2026-01-01", "2026-01-02"])
+
+    def test_delete_entries_for_timestamp(self):
+        """Test deleting all rows for one captured moment."""
+        emb = np.array([0.1] * 5, dtype=np.float32)
+        ts = int(time.time())
+        id1 = insert_entry("Txt", ts, emb, "A", "T", filename="x_0.webp", monitor=0)
+        id2 = insert_entry("Txt", ts, emb, "A", "T", filename="x_1.webp", monitor=1)
+        self.assertIsNotNone(id1)
+        self.assertIsNotNone(id2)
+
+        removed = delete_entries_for_timestamp(ts)
+        self.assertEqual(removed, 2)
+
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM entries WHERE timestamp = ?", (ts,))
+        self.assertEqual(cursor.fetchone()[0], 0)
+
+    def test_delete_entries_no_match(self):
+        """Deleting a timestamp with no rows is a no-op returning 0."""
+        removed = delete_entries_for_timestamp(int(time.time()) + 999999)
+        self.assertEqual(removed, 0)
 
 
 if __name__ == '__main__':

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-3">
+  <div class="d-flex flex-wrap align-items-center mb-2">
+    <button type="button" class="btn btn-outline-secondary btn-sm mr-2" id="prevDay">&larr; Prev</button>
+    <h4 class="mb-0" id="dayTitle"></h4>
+    <button type="button" class="btn btn-outline-secondary btn-sm ml-2" id="nextDay">Next &rarr;</button>
+    <div class="ml-auto">
+      <div class="btn-group btn-group-sm" role="group" aria-label="Timeline scope">
+        <button type="button" class="btn btn-outline-secondary active" id="modeDay">Day</button>
+        <button type="button" class="btn btn-outline-secondary" id="modeAll">All</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="jumpNote" class="alert alert-info d-none py-2">
+    <i class="bi bi-search mr-1"></i>
+    Jumped to <span class="font-weight-bold" id="jumpNoteBox"></span> from an Ask result.
+    <a href="/ask" class="alert-link ml-2">Ask another question</a>
+  </div>
+
+  <div id="summaryCard"></div>
+
+  <div class="card my-3">
+    <div class="card-body">
+      <div class="slider-container">
+        <div class="d-flex align-items-center">
+          <button type="button" class="btn btn-outline-secondary btn-sm mr-2" id="prevDescribed" title="Previous AI-described moment">&laquo; AI</button>
+          <input type="range" class="custom-range flex-grow-1" id="trioSlider" min="0" max="0" step="1">
+          <button type="button" class="btn btn-outline-secondary btn-sm ml-2" id="nextDescribed" title="Next AI-described moment">AI &raquo;</button>
+        </div>
+        <div class="slider-value text-muted" id="sliderLabel"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="trioView"></div>
+</div>
+
+<div class="container mb-4">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <span class="font-weight-bold" id="calTitle"></span>
+      <div>
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="calPrev">&laquo;</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="calNext">&raquo;</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="cal-weekdays text-center text-muted small mb-2">
+        <div><b>Su</b></div><div><b>Mo</b></div><div><b>Tu</b></div>
+        <div><b>We</b></div><div><b>Th</b></div><div><b>Fr</b></div>
+        <div><b>Sa</b></div>
+      </div>
+      <div id="calGrid"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

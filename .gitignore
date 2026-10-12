@@ -1,5 +1,6 @@
 __pycache__
 venv
+.venv/
 *.db
 *.egg-info
 dist
@@ -7,3 +8,8 @@ build
 .pytest_cache
 .vscode
 .aider*
+# Shell-redirect junk (e.g. an unquoted `pip install pkg>=2.1.0`)
+=*
+# Ad-hoc probe output
+test_out.txt
+test_err.txt

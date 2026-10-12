@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container my-3">
+    <h4>Search results for "{{ q }}"</h4>
+    {% if not q %}
+      <div class="alert alert-info mt-3">Type something above to search your screen history.</div>
+    {% elif results|length == 0 %}
+      <div class="alert alert-warning mt-3">No matches for "{{ q }}".</div>
+    {% else %}
+      <div class="row mt-3">
+        {% for entry in results %}
+          <div class="col-md-3 mb-4">
+            <div class="card">
+              <a href="#" data-toggle="modal" data-target="#modal-{{ loop.index0 }}">
+                {% if entry.filename %}
+                  <img src="/screenshots/{{ entry.filename }}" class="card-img-top" style="max-height:200px;object-fit:cover;">
+                {% else %}
+                  <div class="card-img-top text-muted text-center py-5">no image</div>
+                {% endif %}
+              </a>
+              <div class="card-body">
+                <div class="small text-muted">{{ entry.app or 'Unknown' }} | {{ entry.title or '' }}</div>
+                <div class="small">{{ entry.timestamp | timestamp_to_human_readable }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="modal-{{ loop.index0 }}" tabindex="-1" role="dialog" aria-labelledby="lbl-{{ loop.index0 }}" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="lbl-{{ loop.index0 }}">{{ entry.app or 'Unknown' }} | {{ entry.title or '' }}</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                  {% if entry.filename %}
+                    <img src="/screenshots/{{ entry.filename }}" style="width:100%;">
+                  {% endif %}
+                  <div class="mt-3 small text-muted">{{ entry.text }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

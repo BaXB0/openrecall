@@ -1,0 +1,217 @@
+.slider-container { padding: 10px 4px; }
+.slider-value { margin-top: 6px; }
+.monitor-img { width: 100%; }
+.trio-desc { white-space: pre-wrap; }
+.cal-day { min-width: 44px; }
+.cal-day a { width: 100%; display: inline-block; }
+.cal-empty { color: #adb5bd; }
+.cal-weekdays,
+#calGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+.cal-cell {
+  min-height: 48px;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  position: relative;
+  border-radius: 6px;
+}
+.cal-cell .cal-day-btn {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  font-weight: 500;
+}
+.cal-cell.cal-blank { visibility: hidden; }
+.cal-cell .cal-empty {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cal-cell.has-activity::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+  background: #d63384;
+}
+.cal-today { outline: 2px solid #d63384; }
+.cal-selected { background-color: #fff3cd; border-radius: 4px; }
+
+/* ---- dark theme (body.theme-dark) ---- */
+/* color-scheme makes the browser render native widgets (scrollbars, date
+   pickers, autofill) dark too, instead of a light scrollbar on a dark page. */
+body.theme-dark {
+  background-color: #121417;
+  color: #e8eaed;
+  color-scheme: dark;
+}
+body.theme-dark .navbar {
+  background-color: #1d2025 !important;
+  border-bottom: 1px solid #2a2e34;
+}
+body.theme-dark .navbar-light .navbar-brand,
+body.theme-dark .navbar-light .nav-link {
+  color: #e8eaed;
+}
+body.theme-dark .navbar-light .nav-link:hover,
+body.theme-dark .navbar-light .nav-link:focus {
+  color: #d63384;
+}
+body.theme-dark .card {
+  background-color: #1c1f24;
+  border-color: #2a2e34;
+}
+body.theme-dark .card-header {
+  background-color: #22262c;
+  border-bottom-color: #2a2e34;
+}
+body.theme-dark .text-muted {
+  color: #9aa1a9 !important;
+}
+body.theme-dark .form-control {
+  background-color: #2a2e34;
+  color: #e8eaed;
+  border-color: #3a4047;
+}
+body.theme-dark .form-control:focus {
+  background-color: #2a2e34;
+  color: #e8eaed;
+}
+body.theme-dark .form-control::placeholder {
+  color: #9aa1a9;
+}
+body.theme-dark .alert {
+  border-width: 1px;
+}
+body.theme-dark .alert-secondary {
+  background-color: #2a2e34;
+  border-color: #3a4047;
+  color: #e8eaed;
+}
+body.theme-dark .alert-info {
+  background-color: #1f3340;
+  border-color: #2a4a5e;
+  color: #cfe8f5;
+}
+body.theme-dark .alert-warning {
+  background-color: #3d3a1f;
+  border-color: #5a5420;
+  color: #f5e8cf;
+}
+body.theme-dark .alert-danger {
+  background-color: #442128;
+  border-color: #6b303c;
+  color: #f7cdd3;
+}
+body.theme-dark .btn-outline-secondary {
+  color: #c6ccd2;
+  border-color: #4a5159;
+}
+body.theme-dark .btn-outline-secondary:hover {
+  background-color: #4a5159;
+  border-color: #4a5159;
+  color: #fff;
+}
+body.theme-dark .btn-outline-secondary.active,
+body.theme-dark .btn-outline-secondary:not(:disabled):not(.disabled):active {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: #fff;
+}
+body.theme-dark .badge-secondary {
+  background-color: #4a5159;
+}
+body.theme-dark .badge-success {
+  background-color: #1e6b34;
+}
+body.theme-dark .badge-danger {
+  background-color: #a03727;
+}
+body.theme-dark .bg-light {
+  background-color: #22262c !important;
+}
+body.theme-dark .border {
+  border-color: #2a2e34 !important;
+}
+body.theme-dark .cal-empty {
+  color: #7c828a;
+}
+body.theme-dark .cal-selected {
+  background-color: rgba(214, 51, 132, 0.14) !important;
+  border-radius: 4px;
+}
+body.theme-dark code {
+  background-color: #2a2e34;
+  color: #f1aeb5;
+}
+body.theme-dark pre {
+  background-color: #16191d;
+  color: #d8dce1;
+  border-color: #2a2e34;
+}
+body.theme-dark hr {
+  border-top-color: #3a4047;
+}
+body.theme-dark .modal-content {
+  background-color: #1c1f24;
+  color: #e8eaed;
+}
+body.theme-dark .modal-header {
+  border-bottom-color: #2a2e34;
+}
+body.theme-dark .modal-body {
+  color: #e8eaed;
+}
+body.theme-dark .close {
+  color: #e8eaed;
+  text-shadow: none;
+  opacity: 0.8;
+}
+
+/* ---- ask page ---- */
+.ask-example { cursor: pointer; }
+body.theme-dark .ask-example {
+  background-color: #2a2e34;
+  color: #c6ccd2;
+}
+body.theme-dark .ask-example:hover {
+  background-color: #3a4047;
+  color: #fff;
+}
+body.theme-dark .list-group-item {
+  background-color: #1c1f24;
+  border-color: #2a2e34;
+  color: #e8eaed;
+}
+body.theme-dark .list-group-item:hover {
+  background-color: #22262c;
+  color: #fff;
+}
+body.theme-dark .list-group-item-action:hover {
+  background-color: #22262c;
+  border-color: #2a2e34;
+  color: #fff;
+}
+body.theme-dark .badge-info {
+  background-color: #1f4a5e;
+}
+body.theme-dark .btn-primary {
+  background-color: #a33167;
+  border-color: #a33167;
+}
+body.theme-dark .btn-primary:hover,
+body.theme-dark .btn-primary:focus {
+  background-color: #c13d7b;
+  border-color: #c13d7b;
+}

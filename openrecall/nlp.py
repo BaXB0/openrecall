@@ -60,6 +60,36 @@ def get_embedding(text: str) -> np.ndarray:
         return np.zeros(EMBEDDING_DIM, dtype=np.float32)
 
 
+def get_embeddings(texts: list) -> np.ndarray:
+    """
+    Batched version of :func:`get_embedding` for many documents at once.
+
+    Each text is embedded on its own (newlines are collapsed to spaces) and the
+    rows come back in input order, so callers can align them with their source
+    list. Returns a (len(texts), EMBEDDING_DIM) float32 array; rows for empty
+    text or a failed model are zero vectors.
+
+    Args:
+        texts: The input strings to embed.
+
+    Returns:
+        A 2D numpy array of shape (len(texts), EMBEDDING_DIM).
+    """
+    if model is None:
+        logger.error("SentenceTransformer model is not loaded. Returning zero vectors.")
+        return np.zeros((len(texts), EMBEDDING_DIM), dtype=np.float32)
+
+    prepared = [" ".join((t or "").split()) for t in texts]
+    try:
+        return np.asarray(
+            model.encode(prepared, batch_size=32, show_progress_bar=False),
+            dtype=np.float32,
+        )
+    except Exception as e:
+        logger.error(f"Error generating batch embeddings: {e}")
+        return np.zeros((len(texts), EMBEDDING_DIM), dtype=np.float32)
+
+
 def cosine_similarity(a: np.ndarray, b: np.ndarray) -> float:
     """
     Calculates the cosine similarity between two numpy vectors.

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Ask - OpenRecall{% endblock %}
+{% block content %}
+<div class="container my-3">
+  <h4 class="mb-1">Ask about your history</h4>
+  <div class="text-muted small mb-3">
+    Searches the AI summaries only &mdash; screenshots and raw captures are pruned after a
+    few days, but every moment the model described is kept.
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <form id="askForm" class="form-row align-items-center">
+        <div class="col-sm">
+          <input class="form-control" type="search" id="q" name="q"
+                 placeholder="when's the last time I played osu"
+                 aria-label="Question" autocomplete="off">
+        </div>
+        <div class="col-sm-auto mt-2 mt-sm-0">
+          <button class="btn btn-primary" type="submit" id="askBtn">Ask</button>
+        </div>
+      </form>
+      <div class="mt-2">
+        <span class="text-muted small mr-1">Try:</span>
+        <a class="badge badge-secondary ask-example" href="#" data-q="when's the last time I played osu">last time I played osu</a>
+        <a class="badge badge-secondary ask-example" href="#" data-q="when did I first use supercrawl">first use supercrawl</a>
+        <a class="badge badge-secondary ask-example" href="#" data-q="what was I doing yesterday">what was I doing yesterday</a>
+        <a class="badge badge-secondary ask-example" href="#" data-q="when did I work on the hermes dashboard">hermes dashboard</a>
+      </div>
+      <div class="form-check mt-2">
+        <input class="form-check-input" type="checkbox" id="useAi" checked>
+        <label class="form-check-label small text-muted" for="useAi">
+          Let the local model pick the best match (slower, and better at telling
+          "playing osu" apart from "browsing the osu store")
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div id="askStatus" class="alert alert-secondary d-none">Thinking&hellip;</div>
+  <div id="askError" class="alert alert-danger d-none"></div>
+  <div id="askResult"></div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/ask.js"></script>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}AI Summary - OpenRecall{% endblock %}
+{% block content %}
+<div class="container my-3">
+  <h4 class="mb-3">AI Summary</h4>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="font-weight-bold" id="aiStage">Loading&hellip;</span>
+        <span class="text-muted small" id="aiDay"></span>
+      </div>
+      <div class="progress mb-2" style="height:18px;">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" id="aiBar" style="width:0%"></div>
+      </div>
+      <div class="small text-muted" id="aiScene"></div>
+      <div class="small text-muted mt-2" id="aiDone"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <span class="font-weight-bold">Live log</span>
+      <span class="text-muted small" id="aiUpdated"></span>
+    </div>
+    <div class="card-body p-0">
+      <pre id="aiLog" class="m-0 p-3" style="max-height:60vh;overflow:auto;font-size:12px;white-space:pre-wrap;"></pre>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/ai.js"></script>
+{% endblock %}
