@@ -128,51 +128,58 @@ OpenRecall offers several key advantages over closed-source alternatives:
 ## Get Started
 
 ### Prerequisites
-- Python 3.11
-- MacOSX/Windows/Linux
+- **Arch Linux with KDE Plasma on Wayland** (KWin window/monitor capture, Spectacle screenshots, `qdbus6`, `kscreen-doctor`)
+- Python 3.11+
 - Git
+- [Ollama](https://ollama.com) for AI-powered summaries
 
-To install:
+### Install
 ```
-python3 -m pip install --upgrade --no-cache-dir git+https://github.com/openrecall/openrecall.git
+git clone git@github.com:BaXB0/openrecall.git
+cd openrecall
+./setup_openrecall.sh
 ```
+The setup script creates a virtual environment (`.venv`), installs the dependencies, and generates systemd user units for the capture loop and web UI.
 
-To run:
+### Run
 ```
-python3 -m openrecall.app
+systemctl --user enable --now openrecall-capture.service openrecall-web.service
 ```
-Open your browser to:
-[http://localhost:8082](http://localhost:8082) to access OpenRecall.
+Open [http://localhost:8082](http://localhost:8082) to access OpenRecall.
+
+### One-off tools (generated alongside the services)
+- `./snapshot.sh` — one-time capture
+- `./snapshot_loop.sh` — continuous capture (~60s per moment)
+- `./bulk_summary.sh` — run AI summaries (requires Ollama + a summarization model)
+- `./prune.sh --dry-run` — preview pruning of old un-summarized moments
+- `./wallpaper_calibrate.sh` — tune wallpaper detection
+- `./tray.sh` — optional system-tray launcher
 
 ## Arguments
 `--storage-path` (default: user data path for your OS): allows you to specify the path where the screenshots and database should be stored.
 
 `--primary-monitor-only` (default: False): only record the primary monitor (rather than individual screenshots for other monitors)
 
-## Uninstall instructions
+## Uninstall
 
-To uninstall OpenRecall and remove all stored data:
+To stop OpenRecall and remove all stored data:
 
-1. Uninstall the package:
+1. Stop and disable the services:
    ```
-   python3 -m pip uninstall openrecall
+   systemctl --user disable --now openrecall-capture.service openrecall-web.service
    ```
 
-2. Remove stored data:
-   - On Windows:
-     ```
-     rmdir /s %APPDATA%\openrecall
-     ```
-   - On macOS:
-     ```
-     rm -rf ~/Library/Application\ Support/openrecall
-     ```
-   - On Linux:
-     ```
-     rm -rf ~/.local/share/openrecall
-     ```
+2. Remove the checkout (this also removes its `.venv`):
+   ```
+   rm -rf <wherever you cloned it>
+   ```
 
-Note: If you specified a custom storage path at any time using the `--storage-path` argument, make sure to remove that directory too.
+3. Remove stored data:
+   ```
+   rm -rf ~/.local/share/openrecall
+   ```
+
+Note: If you set a custom storage path via `OPENRECALL_STORAGE` or `--storage-path`, remove that directory too.
 
 ## Contribute
 
