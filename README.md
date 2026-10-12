@@ -8,8 +8,6 @@
 ```
 **Enjoy this project?** Show your support by starring it! ⭐️ Thank you!
 
-Join our [Discord](https://discord.gg/RzvCYRgUkx) and/or [Telegram](https://t.me/+5DULWTesqUYwYjY0) community to stay informed of updates!
-
 ## About this fork (a fork of OpenRecall)
 
 This repository is a **personal fork of [openrecall/openrecall](https://github.com/openrecall/openrecall)**, reworked to run natively on **Arch Linux + KDE Plasma (Wayland)** and extended with a set of features on top of upstream. Everything lives on the single **`main`** branch: this fork = upstream `main` + one commit of fork changes; upstream is synced by merging `upstream/main` into it.
@@ -100,8 +98,6 @@ Storage defaults to `~/.local/share/openrecall` (the platform convention); overr
 
 Requirements: KDE Plasma on Wayland (KWin window/monitor capture + Spectacle screenshots), `qdbus6`, `kscreen-doctor`, `spectacle`, and Ollama for AI summaries. See [CUSTOMIZATIONS.md](CUSTOMIZATIONS.md) for the full delta list and `AGENTS.md` for developer notes.
 
-https://github.com/openrecall/openrecall/assets/16676419/cfc579cb-165b-43e4-9325-9160da6487d2
-
 ## Why Choose OpenRecall?
 
 OpenRecall offers several key advantages over closed-source alternatives:
@@ -128,10 +124,6 @@ OpenRecall offers several key advantages over closed-source alternatives:
 | OS Support       | Windows, macOS, Linux         | Windows                                          | macOS                                  |
 | Privacy          | On-device, self-hosted        | Microsoft's privacy policy applies               | Connected to ChatGPT                   |
 | Cost             | Free                          | Part of Windows 11 (requires specialized hardware) | Monthly subscription                   |
-
-## Quick links
-- [Roadmap](https://github.com/orgs/openrecall/projects/2) and you can [vote for your favorite features](https://github.com/openrecall/openrecall/discussions/9#discussion-6775473)
-- [FAQ](https://github.com/openrecall/openrecall/wiki/FAQ)
 
 ## Get Started
 
@@ -184,9 +176,7 @@ Note: If you specified a custom storage path at any time using the `--storage-pa
 
 ## Contribute
 
-This fork is maintained by [BaXB0](https://github.com/BaXB0). Found a bug or want a feature? Open an **issue** — or better, a **pull request** — in this repository:
-
-- Issues & pull requests: https://github.com/BaXB0/openrecall/issues
+Found a bug or want a feature? Open an **issue** — or better, a **pull request** — in this repository: https://github.com/BaXB0/openrecall/issues
 
 For problems with *unmodified upstream* OpenRecall, or to contribute changes back to the original project, use [openrecall/openrecall](https://github.com/openrecall/openrecall) instead.
 
